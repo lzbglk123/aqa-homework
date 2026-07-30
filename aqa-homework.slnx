@@ -12,4 +12,8 @@
   <Folder Name="/lesson-3/TMS-1/homework/">
     <Project Path="lesson-3/TMS-1/homework/TMS-1.csproj" />
   </Folder>
+  <Folder Name="/lesson-5/" />
+  <Folder Name="/lesson-5/Battleship/">
+    <Project Path="lesson-5/Battleship/Battleship/Battleship.csproj" />
+  </Folder>
 </Solution>
