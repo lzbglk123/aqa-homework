@@ -3,7 +3,10 @@
 class HumanPlayer : IPlayer
 {
     public string Name { get; set; }
-    
+
+    public Position LastShot { get; private set; }
+
+
     public ShootResult Shoot(Board targetBoard)
     {
         if (!TryReadFromConsole("X", 0, out var xPosition))
@@ -14,27 +17,40 @@ class HumanPlayer : IPlayer
         if (!TryReadFromConsole("Y", 0, out var yPosition))
             return ShootResult.InvalidShot;
 
+
         if (xPosition == null || yPosition == null)
             return ShootResult.InvalidShot;
 
-        var shotPosition = new Position(xPosition.Value, yPosition.Value);
-        
+
+        LastShot = new Position(
+            xPosition.Value,
+            yPosition.Value);
+
+
+        var shotPosition = LastShot;
+
+
         if (!targetBoard.IsInside(shotPosition))
         {
             Console.WriteLine("Invalid shot position!");
             return ShootResult.InvalidShot;
         }
-        
-        return targetBoard.HasShip(shotPosition) ? ShootResult.Hit : ShootResult.Miss;
+
+
+        return targetBoard.HasShip(shotPosition)
+            ? ShootResult.Hit
+            : ShootResult.Miss;
     }
-    
+
+
     private bool TryReadFromConsole(string coordinateName, int roundCount, out int? coordinate)
     {
         Console.WriteLine($"Input your {coordinateName} coordinate for round {roundCount}:");
+
         var input = Console.ReadLine();
+
         coordinate = null;
 
-        //start business operation
 
         try
         {
@@ -46,18 +62,15 @@ class HumanPlayer : IPlayer
 
             coordinate = result;
         }
-        catch (ArgumentOutOfRangeException ex)
+        catch (ArgumentOutOfRangeException)
         {
             Console.WriteLine("Invalid input!");
         }
 
+
         return true;
-        // if (!int.TryParse(input, out coordinate))
-        // {
-        //     Console.WriteLine("Invalid input");
-        //     return false;
-        // }
     }
+
 
     public void WriteName()
     {

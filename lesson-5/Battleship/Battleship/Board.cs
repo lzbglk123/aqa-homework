@@ -24,6 +24,11 @@ class Board
         return Ships.Any(currentShip => currentShip.IsOnPosition(position));
     }
     
+    public Ship? FindShip(Position position)
+    {
+        return Ships.FirstOrDefault(
+            ship => ship.IsOnPosition(position));
+    }
     private void PrivateLogic()
     {
     }
