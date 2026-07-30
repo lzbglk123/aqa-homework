@@ -2,14 +2,20 @@
 
 class ComputerPlayer : IPlayer
 {
+    public Position LastShot { get; private set; }
+
+
     public ShootResult Shoot(Board targetBoard)
     {
         var random = new Random();
 
-        var shotPosition = targetBoard.GeneratePosition(random);
+        LastShot = targetBoard.GeneratePosition(random);
 
-        return targetBoard.HasShip(shotPosition) ? ShootResult.Hit : ShootResult.Miss;
+        return targetBoard.HasShip(LastShot)
+            ? ShootResult.Hit
+            : ShootResult.Miss;
     }
+
 
     public void WriteName()
     {

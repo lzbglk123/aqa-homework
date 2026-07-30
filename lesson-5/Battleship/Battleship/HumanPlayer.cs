@@ -20,7 +20,10 @@ class HumanPlayer : IPlayer
         var shotPosition = new Position(xPosition.Value, yPosition.Value);
         
         if (!targetBoard.IsInside(shotPosition))
-            throw new ShotPositionOutOfRangeException("Invalid shot position!");
+        {
+            Console.WriteLine("Invalid shot position!");
+            return ShootResult.InvalidShot;
+        }
         
         return targetBoard.HasShip(shotPosition) ? ShootResult.Hit : ShootResult.Miss;
     }
@@ -35,7 +38,13 @@ class HumanPlayer : IPlayer
 
         try
         {
-            coordinate = int.Parse(input); // ArgumentNullException
+            if (!int.TryParse(input, out var result))
+            {
+                Console.WriteLine("Invalid input!");
+                return false;
+            }
+
+            coordinate = result;
         }
         catch (ArgumentOutOfRangeException ex)
         {
