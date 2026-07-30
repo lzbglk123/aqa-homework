@@ -1,7 +1,8 @@
 ﻿using TMS_1;
 
-// Main - Program 
+Player player = new Player("Player");
+Player computer = new Player("Computer");
 
-Game game = new Game(5); // object of type (class) Game
+Game game = new Game(player, computer, 5);
 
 game.Play();

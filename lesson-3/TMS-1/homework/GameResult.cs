@@ -8,7 +8,6 @@ public class GameResult
 
     public string Text { get; }
 
-
     public GameResult(Move playerMove, Move computerMove, string text)
     {
         PlayerMove = playerMove;
@@ -16,11 +15,17 @@ public class GameResult
         Text = text;
     }
 
-
     public void Print()
     {
         Console.WriteLine($"You chose {PlayerMove.Name}");
         Console.WriteLine($"Computer chose {ComputerMove.Name}");
         Console.WriteLine(Text);
+    }
+
+    public void Print(int roundNumber)
+    {
+        Console.WriteLine();
+        Console.WriteLine($"Round {roundNumber}");
+        Print();
     }
 }
