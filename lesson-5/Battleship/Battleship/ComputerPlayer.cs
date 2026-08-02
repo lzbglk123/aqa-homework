@@ -7,7 +7,7 @@ class ComputerPlayer : IPlayer
     private readonly List<Position> shots = new();
 
 
-    public ShootResult Shoot(Board targetBoard)
+    public Shot Shoot(Board targetBoard)
     {
         var random = new Random();
 
@@ -28,9 +28,13 @@ class ComputerPlayer : IPlayer
         shots.Add(LastShot);
 
 
-        return targetBoard.HasShip(LastShot)
-            ? ShootResult.Hit
-            : ShootResult.Miss;
+        var ship = targetBoard.FindShip(shotPosition);
+
+
+        return new Shot(
+            targetBoard,
+            shotPosition,
+            ship);
     }
 
 

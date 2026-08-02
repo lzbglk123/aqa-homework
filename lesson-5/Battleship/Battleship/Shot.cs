@@ -1,16 +1,7 @@
 namespace Battleship;
 
-class Shot
+record Shot(Board Board, Position Position, Ship? Ship)
 {
-    public Board Board { get; }
-    public Position Position { get; }
-    public Ship? Ship { get; }
-
-
-    public Shot(Board board, Position position, Ship? ship)
-    {
-        Board = board;
-        Position = position;
-        Ship = ship;
-    }
+    public ShootResult Result =>
+        Ship == null ? ShootResult.Miss : ShootResult.Hit;
 }

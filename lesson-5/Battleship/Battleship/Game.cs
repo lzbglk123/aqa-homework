@@ -11,8 +11,8 @@ class Game
 
     public void Play(PlayerType playerType, Board board)
     {
-        var player = new HumanPlayer();
-        var computer = new ComputerPlayer();
+        IPlayer player = new HumanPlayer();
+        IPlayer computer = new ComputerPlayer();
 
 
         Board computerBoard = GenerateOpponentBoard(
@@ -28,49 +28,31 @@ class Game
 
             try
             {
-                ShootResult playerResult;
+                Shot playerShot = player.Shoot(computerBoard);
 
-                try
+                if (IsRepeatedShot(playerShot))
                 {
-                    playerResult = player.Shoot(computerBoard);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    continue;
-                }
-                if (playerResult == ShootResult.InvalidShot)
-                {
-                    Console.WriteLine("Turn skipped!");
-                    continue;
+                    throw new Exception("You already shot at this position!");
                 }
 
+                Shots.Add(playerShot);
 
-                if (playerResult != ShootResult.InvalidShot)
+
+                if (playerShot.Ship != null)
                 {
-                    var playerShot = MakeShot(
-                        computerBoard,
-                        player.LastShot);
-
-
-                    if (playerShot.Ship != null)
-                    {
-                        PlayerHits++;
-                        Console.WriteLine("Player hit!");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Player miss!");
-                    }
+                    PlayerHits++;
+                    Console.WriteLine("Player hit!");
                 }
                 else
                 {
-                    Console.WriteLine("Invalid shot!");
+                    Console.WriteLine("Player miss!");
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
+                Console.WriteLine("Turn skipped!");
+                continue;
             }
 
 
@@ -82,16 +64,18 @@ class Game
 
             try
             {
-                var computerResult = computer.Shoot(board);
+                Shot computerShot = computer.Shoot(board);
 
+                if (IsRepeatedShot(computerShot))
+                {
+                    throw new Exception("You already shot at this position!");
+                }
 
-                var computerShot = MakeShot(
-                    board,
-                    computer.LastShot);
+                Shots.Add(computerShot);
 
 
                 Console.WriteLine(
-                    $"Computer shot X:{computer.LastShot.X} Y:{computer.LastShot.Y}");
+                    $"Computer shot X:{computerShot.Position.X} Y:{computerShot.Position.Y}");
 
 
                 if (computerShot.Ship != null)
@@ -114,6 +98,12 @@ class Game
 
             Console.WriteLine(
                 $"Score: Player {PlayerHits} : {ComputerHits} Computer");
+
+
+            PrintStatistics(computerBoard);
+            PrintStatistics(board);
+
+
             if (PlayerHits >= 3)
             {
                 Console.WriteLine("Player wins!");
@@ -125,11 +115,16 @@ class Game
                 Console.WriteLine("Computer wins!");
                 break;
             }
-
-
-            PrintStatistics(computerBoard);
-            PrintStatistics(board);
         }
+    }
+
+
+    private bool IsRepeatedShot(Shot shot)
+    {
+        return Shots.Any(oldShot =>
+            oldShot.Board == shot.Board &&
+            oldShot.Position.X == shot.Position.X &&
+            oldShot.Position.Y == shot.Position.Y);
     }
 
 
@@ -139,6 +134,7 @@ class Game
 
 
         int length = random.Next(1, 4);
+
 
         bool horizontal = random.Next(0, 2) == 0;
 
@@ -169,33 +165,6 @@ class Game
             rows,
             columns,
             new[] { ship });
-    }
-
-
-    private Shot MakeShot(Board board, Position position)
-    {
-        if (Shots.Any(shot =>
-                shot.Board == board &&
-                shot.Position.X == position.X &&
-                shot.Position.Y == position.Y))
-        {
-            throw new Exception("You already shot at this position!");
-        }
-
-
-        var ship = board.FindShip(position);
-
-
-        var shot = new Shot(
-            board,
-            position,
-            ship);
-
-
-        Shots.Add(shot);
-
-
-        return shot;
     }
 
 
@@ -235,13 +204,13 @@ class Game
         }
 
 
-        var hitsCoordinates = boardShots
+        var hits = boardShots
             .Where(shot => shot.Ship != null)
             .Select(shot =>
                 $"({shot.Position.X},{shot.Position.Y})");
 
 
         Console.WriteLine(
-            "Hit positions: " + string.Join(", ", hitsCoordinates));
+            "Hit positions: " + string.Join(", ", hits));
     }
 }

@@ -4,42 +4,41 @@ class HumanPlayer : IPlayer
 {
     public string Name { get; set; }
 
-    public Position LastShot { get; private set; }
 
-
-    public ShootResult Shoot(Board targetBoard)
+    public Shot Shoot(Board targetBoard)
     {
         if (!TryReadFromConsole("X", 0, out var xPosition))
-            return ShootResult.InvalidShot;
+        {
+            throw new Exception("Invalid input!");
+        }
 
         Console.WriteLine();
 
         if (!TryReadFromConsole("Y", 0, out var yPosition))
-            return ShootResult.InvalidShot;
-
+        {
+            throw new Exception("Invalid input!");
+        }
 
         if (xPosition == null || yPosition == null)
-            return ShootResult.InvalidShot;
+        {
+            throw new Exception("Invalid input!");
+        }
 
-
-        LastShot = new Position(
+        var shotPosition = new Position(
             xPosition.Value,
             yPosition.Value);
 
-
-        var shotPosition = LastShot;
-
-
         if (!targetBoard.IsInside(shotPosition))
         {
-            Console.WriteLine("Invalid shot position!");
-            return ShootResult.InvalidShot;
+            throw new Exception("Invalid shot position!");
         }
 
+        var ship = targetBoard.FindShip(shotPosition);
 
-        return targetBoard.HasShip(shotPosition)
-            ? ShootResult.Hit
-            : ShootResult.Miss;
+        return new Shot(
+            targetBoard,
+            shotPosition,
+            ship);
     }
 
 
@@ -51,22 +50,12 @@ class HumanPlayer : IPlayer
 
         coordinate = null;
 
-
-        try
+        if (!int.TryParse(input, out var result))
         {
-            if (!int.TryParse(input, out var result))
-            {
-                Console.WriteLine("Invalid input!");
-                return false;
-            }
-
-            coordinate = result;
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            Console.WriteLine("Invalid input!");
+            return false;
         }
 
+        coordinate = result;
 
         return true;
     }
