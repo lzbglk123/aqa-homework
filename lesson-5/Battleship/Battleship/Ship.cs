@@ -3,11 +3,14 @@
 abstract class Ship
 {
     public Position Position { get; }
+
     public int Length { get; }
 
-    public List<Shot> Shots { get; } = new();
+    public List<Shot> Hits { get; } = new();
 
-    public bool IsSunk => Shots.Count == Length;
+
+    public bool IsSunk => Hits.Count == Length;
+
 
     public Ship(Position position, int length)
     {
@@ -15,7 +18,9 @@ abstract class Ship
         Length = length;
     }
 
+
     public abstract bool IsOnPosition(Position position);
 
-    public abstract bool IsIntersecting(Ship otherShip);
+
+    public abstract bool IsIntersecting(Ship other);
 }

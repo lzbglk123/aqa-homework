@@ -2,10 +2,12 @@
 
 class HorizontalShip : Ship
 {
-    public HorizontalShip(Position position, int length) : base(position, length)
+    public HorizontalShip(Position position, int length)
+        : base(position, length)
     {
         Console.WriteLine("Horizontal ship created!");
     }
+
 
     public override bool IsOnPosition(Position position)
     {
@@ -14,13 +16,14 @@ class HorizontalShip : Ship
                position.X < Position.X + Length;
     }
 
-    public override bool IsIntersecting(Ship otherShip)
+
+    public override bool IsIntersecting(Ship other)
     {
         for (int x = Position.X; x < Position.X + Length; x++)
         {
-            var position = new Position(x, Position.Y);
+            var currentPosition = new Position(x, Position.Y);
 
-            if (otherShip.IsOnPosition(position))
+            if (other.IsOnPosition(currentPosition))
             {
                 return true;
             }
@@ -28,6 +31,7 @@ class HorizontalShip : Ship
 
         return false;
     }
+
 
     public void MakeSound()
     {
