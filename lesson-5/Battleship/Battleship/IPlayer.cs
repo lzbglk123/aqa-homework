@@ -2,5 +2,5 @@
 
 interface IPlayer : IShooter
 {
-    public void WriteName();
+    void WriteName();
 }
