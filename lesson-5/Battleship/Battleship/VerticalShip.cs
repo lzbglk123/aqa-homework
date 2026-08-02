@@ -6,9 +6,26 @@ class VerticalShip : Ship
     {
         Console.WriteLine("Vertical ship created!");
     }
-    
-    public override bool IsOnPosition(Position shotPosition)
+
+    public override bool IsOnPosition(Position position)
     {
-        return shotPosition.X == Position.X && shotPosition.Y >= Position.Y && shotPosition.Y < Position.Y + Length;
+        return position.X == Position.X &&
+               position.Y >= Position.Y &&
+               position.Y < Position.Y + Length;
+    }
+
+    public override bool IsIntersecting(Ship otherShip)
+    {
+        for (int y = Position.Y; y < Position.Y + Length; y++)
+        {
+            var position = new Position(Position.X, y);
+
+            if (otherShip.IsOnPosition(position))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -2,9 +2,12 @@
 
 abstract class Ship
 {
-    // Координаты самой левой верней палубы
     public Position Position { get; }
     public int Length { get; }
+
+    public List<Shot> Shots { get; } = new();
+
+    public bool IsSunk => Shots.Count == Length;
 
     public Ship(Position position, int length)
     {
@@ -13,4 +16,6 @@ abstract class Ship
     }
 
     public abstract bool IsOnPosition(Position position);
+
+    public abstract bool IsIntersecting(Ship otherShip);
 }
